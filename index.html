@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rune Selector</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #111;
+      color: #fff;
+      font-family: sans-serif;
+      overflow: hidden;    /* disable all scrolling */
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 100px);
+      margin: 50px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+    .header h1 {
+      position: relative;
+      top: -5px;           /* move the title up by 5px */
+    }
+
+    .grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1rem;           /* increased gap for aesthetics */
+      padding: 0 1rem;
+    }
+
+    .rune-button {
+      background: #222;
+      color: #fff;
+      font-size: 1.1rem;   /* slightly larger text */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.75rem 0;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .rune-button .symbol {
+      font-size: 2rem;     /* larger rune symbol */
+      line-height: 1;
+    }
+    .rune-button .name {
+      margin-top: 0.4rem;
+      font-size: 1rem;     /* larger rune name */
+    }
+    .rune-button:hover {
+      background: #2c2c2c;
+    }
+
+    .selected-container {
+      padding: 1rem;
+    }
+    .selected-container div {
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    .selected-container textarea {
+      width: 100%;
+      height: 100px;
+      background: #222;
+      color: #fff;
+      resize: none;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: none;
+      outline: none;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+    .footer button {
+      background: #222;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Select Your Runes</h1>
+    </div>
+
+    <div class="grid">
+      <button class="rune-button"><span class="symbol">ᚠ</span><span class="name">Fehu</span></button>
+      <button class="rune-button"><span class="symbol">ᚢ</span><span class="name">Uruz</span></button>
+      <button class="rune-button"><span class="symbol">ᚦ</span><span class="name">Thurisaz</span></button>
+      <button class="rune-button"><span class="symbol">ᚨ</span><span class="name">Ansuz</span></button>
+      <button class="rune-button"><span class="symbol">ᚱ</span><span class="name">Raidho</span></button>
+      <button class="rune-button"><span class="symbol">ᚲ</span><span class="name">Kenaz</span></button>
+
+      <button class="rune-button"><span class="symbol">ᚷ</span><span class="name">Gebo</span></button>
+      <button class="rune-button"><span class="symbol">ᚹ</span><span class="name">Wunjo</span></button>
+      <button class="rune-button"><span class="symbol">ᚺ</span><span class="name">Hagalaz</span></button>
+      <button class="rune-button"><span class="symbol">ᚾ</span><span class="name">Nauthiz</span></button>
+      <button class="rune-button"><span class="symbol">ᛁ</span><span class="name">Isa</span></button>
+      <button class="rune-button"><span class="symbol">ᛃ</span><span class="name">Jera</span></button>
+
+      <button class="rune-button"><span class="symbol">ᛇ</span><span class="name">Eihwaz</span></button>
+      <button class="rune-button"><span class="symbol">ᛈ</span><span class="name">Perthro</span></button>
+      <button class="rune-button"><span class="symbol">ᛉ</span><span class="name">Algiz</span></button>
+      <button class="rune-button"><span class="symbol">ᛋ</span><span class="name">Sowilo</span></button>
+      <button class="rune-button"><span class="symbol">ᛏ</span><span class="name">Tiwaz</span></button>
+      <button class="rune-button"><span class="symbol">ᛒ</span><span class="name">Berkano</span></button>
+
+      <button class="rune-button"><span class="symbol">ᛖ</span><span class="name">Ehwaz</span></button>
+      <button class="rune-button"><span class="symbol">ᛗ</span><span class="name">Mannaz</span></button>
+      <button class="rune-button"><span class="symbol">ᛚ</span><span class="name">Laguz</span></button>
+      <button class="rune-button"><span class="symbol">ᛝ</span><span class="name">Ingwaz</span></button>
+      <button class="rune-button"><span class="symbol">ᛞ</span><span class="name">Dagaz</span></button>
+      <button class="rune-button"><span class="symbol">ᛟ</span><span class="name">Othala</span></button>
+    </div>
+
+    <div class="selected-container">
+      <div>Selected Runes:</div>
+      <textarea readonly></textarea>
+    </div>
+
+    <div class="footer">
+      <button id="reset">Reset</button>
+      <button id="copy">Copy</button>
+      <button id="remove">Remove Last Rune</button>
+    </div>
+  </div>
+
+  <script>
+    const textarea = document.querySelector('textarea');
+    document.querySelectorAll('.rune-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.querySelector('.name').textContent;
+        textarea.value = textarea.value
+          ? textarea.value + ', ' + name
+          : name;
+      });
+    });
+
+    document.getElementById('reset').addEventListener('click', () => {
+      textarea.value = '';
+    });
+
+    document.getElementById('remove').addEventListener('click', () => {
+      const items = textarea.value.split(/\s*,\s*/);
+      items.pop();
+      textarea.value = items.join(', ');
+    });
+
+    document.getElementById('copy').addEventListener('click', () => {
+      textarea.select();
+      document.execCommand('copy');
+    });
+  </script>
+
+</body>
+</html>
